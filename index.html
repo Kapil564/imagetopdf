@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Image to PDF Converter</title>
+
+<!-- jsPDF CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Image to PDF Converter</h1>
+
+    <div class="drop-area" id="dropArea">
+        <p>Drag & Drop Images Here<br>or Click to Select</p>
+        <input type="file" id="fileInput" accept="image/*" multiple style="display:none;">
+    </div>
+
+    <div class="thumbs" id="thumbs"></div>
+
+    <button id="editpdf"onClick="editpdf()">Customize</button>
+    <button id="Downloadbutton" onclick="convertToPDF()">Download PDF</button>
+</div>
+<script src="index.js"></script>
+</body>
+</html>
