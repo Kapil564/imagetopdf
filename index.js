@@ -54,11 +54,42 @@ function renderThumbs() {
         const div = document.createElement("div");
         div.className = "thumb";
         div.draggable = true;
+        div.style.position = "relative";
 
         const img = document.createElement("img");
         img.src = URL.createObjectURL(file);
 
         div.appendChild(img);
+        
+        // Add delete button
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerHTML = "×";
+        deleteBtn.style.cssText = `
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #ff4444;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            transition: background 0.3s ease;
+        `;
+        deleteBtn.onmouseover = () => deleteBtn.style.background = "#cc0000";
+        deleteBtn.onmouseout = () => deleteBtn.style.background = "#ff4444";
+        deleteBtn.onclick = (e) => {
+            e.stopPropagation();
+            removeImage(index);
+        };
+        div.appendChild(deleteBtn);
         thumbs.appendChild(div);
 
         // drag events
@@ -253,8 +284,20 @@ function showEditModal() {
                 margin-bottom: 15px;
                 border-radius: 8px;
                 background: #f9f9f9;
+                position: relative;
             ">
-                <h3 style="margin: 0 0 10px 0;">Image ${index + 1}</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="margin: 0 0 10px 0;">Image ${index + 1}</h3>
+                    <button onclick="removeImageFromModal(${index})" style="
+                        padding: 6px 12px;
+                        background: #ff4444;
+                        color: white;
+                        border: none;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        font-size: 14px;
+                    ">Delete Image</button>
+                </div>
                 
                 <div style="display: flex; gap: 20px; margin-bottom: 15px;">
                     <div style="flex: 1;">
@@ -362,4 +405,29 @@ function closeEditModal() {
 function applyChanges() {
     closeEditModal();
     alert("Changes applied! You can now download the PDF.");
+}
+
+/* REMOVE IMAGE */
+function removeImage(index) {
+    if (confirm("Are you sure you want to delete this image?")) {
+        const file = filesArray[index];
+        if (file.fileId) {
+            delete imageMetadata[file.fileId];
+        }
+        filesArray.splice(index, 1);
+        renderThumbs();
+        
+        // If modal is open, close and reopen it
+        const modal = document.getElementById("editModal");
+        if (modal) {
+            closeEditModal();
+            if (filesArray.length > 0) {
+                showEditModal();
+            }
+        }
+    }
+}
+
+function removeImageFromModal(index) {
+    removeImage(index);
 }
